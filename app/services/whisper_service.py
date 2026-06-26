@@ -2,7 +2,10 @@ import whisper
 
 model = whisper.load_model("base")
 
-def transcribe_audio(audio_path: str):
-    result = model.transcribe(audio_path)
 
+def transcribe_audio(file_path: str) -> str:
+    """
+    Transcribe an audio file using Whisper.
+    """
+    result = model.transcribe(file_path)
     return result["text"]
