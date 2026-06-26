@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 import os
 
-from app.transcriber import transcribe_audio
+from app.services.whisper_service import transcribe_audio
 
 app = FastAPI(
     title="Whisper STT API",
