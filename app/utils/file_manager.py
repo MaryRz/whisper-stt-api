@@ -1,7 +1,6 @@
 from pathlib import Path
 from uuid import uuid4
 
-
 def generate_safe_filename(original_filename: str) -> str:
     """
     Generate a unique and safe filename while preserving
