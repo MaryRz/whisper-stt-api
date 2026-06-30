@@ -16,6 +16,8 @@ from app.utils.file_manager import (
     is_allowed_file,
 )
 
+from app.schemas.transcription import TranscriptionResponse
+
 router = APIRouter(tags=["Speech To Text"])
 
 
@@ -27,7 +29,9 @@ def health():
 @router.post(
     "/transcribe",
     summary="Transcribe an audio file",
+    response_model=TranscriptionResponse,
 )
+
 async def transcribe_audio_endpoint(
     file: UploadFile = File(...)
 ):
