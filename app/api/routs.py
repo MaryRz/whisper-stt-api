@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from fastapi import (
     APIRouter,
     UploadFile,
@@ -20,36 +18,50 @@ from app.utils.file_manager import (
 
 router = APIRouter(tags=["Speech To Text"])
 
+
 @router.get("/")
 def health():
-    return {
-        "status": "running"
-    }
+    return {"status": "running"}
 
-@router.post("/transcribe")
-async def transcribe(
+
+@router.post(
+    "/transcribe",
+    summary="Transcribe an audio file",
+)
+async def transcribe_audio_endpoint(
     file: UploadFile = File(...)
 ):
+    """
+    Upload an audio file and return its transcription.
+    """
+
+    if not file.filename:
+        raise HTTPException(
+            status_code=400,
+            detail="Filename is missing.",
+        )
+
     if not is_allowed_file(file.filename):
         raise HTTPException(
             status_code=400,
-            detail="Unsupported audio format."
+            detail="Unsupported audio format.",
         )
+
     safe_filename = generate_safe_filename(file.filename)
     file_path = UPLOAD_DIR / safe_filename
 
-    save_uploaded_file(
-        file=file,
-        destination=file_path,
-    )
+    try:
+        save_uploaded_file(
+            file=file,
+            destination=file_path,
+        )
 
-    text = transcribe_audio(
-        str(file_path)
-    )
+        text = transcribe_audio(str(file_path))
 
-    delete_uploaded_file(file_path)
+        return {
+            "filename": safe_filename,
+            "transcription": text,
+        }
 
-    return {
-        "filename": safe_filename,
-        "transcription": text,
-    }
+    finally:
+        delete_uploaded_file(file_path)
