@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.api.routes import router
-from app.exceptions.handlers import register_exception_handlers
+from app.exception.handlers import register_exception_handlers
 
 app = FastAPI(
     title="Whisper STT API",
